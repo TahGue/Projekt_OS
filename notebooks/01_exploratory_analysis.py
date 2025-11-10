@@ -1,9 +1,4 @@
-"""
-Exploratory Data Analysis - Olympic Games Data
-Kanada-specifik analys
 
-Detta script kan köras direkt eller användas som referens för notebook-versionen.
-"""
 
 import pandas as pd
 import numpy as np
