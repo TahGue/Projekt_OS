@@ -32,113 +32,165 @@ app.layout = html.Div([
 
     # KANADA-SPOTLIGHT SEKTION
     html.Div([
-        html.H2("Spotlight: Kanada i 3D"),
-        html.P("Utforska kanadensiska idrottares fysiska profiler. Välj säsong, filtrera på medaljörer och dra i tidsreglaget för att se hur atleternas ålder, längd och vikt förändras över åren."),
+        html.Div([
+            html.H2("Spotlight: Kanada i 3D"),
+            html.P(
+                "Utforska kanadensiska idrottares fysiska profiler. Välj säsong, filtrera på medaljörer och dra i tidsreglaget för att se hur atleternas ålder, längd och vikt förändras över åren.",
+                className='section-description'
+            )
+        ], className='section-header'),
         html.Div([
             html.Div([
-                html.Label("Välj säsong"),
-                dcc.RadioItems(
-                    id='canada-season-filter',
-                    options=[
-                        {'label': 'Alla spel', 'value': 'All'},
-                        {'label': 'Sommarspel', 'value': 'Summer'},
-                        {'label': 'Vinterspel', 'value': 'Winter'}
-                    ],
-                    value='All',
-                    className='radio-group'
+                html.Div([
+                    html.Div([
+                        html.Label("Välj säsong"),
+                        dcc.RadioItems(
+                            id='canada-season-filter',
+                            options=[
+                                {'label': 'Alla spel', 'value': 'All'},
+                                {'label': 'Sommarspel', 'value': 'Summer'},
+                                {'label': 'Vinterspel', 'value': 'Winter'}
+                            ],
+                            value='All',
+                            className='radio-group'
+                        )
+                    ], className='control-card'),
+                    html.Div([
+                        html.Label("Vilka idrottare ska visas?"),
+                        dcc.RadioItems(
+                            id='canada-medal-filter',
+                            options=[
+                                {'label': 'Alla deltagare', 'value': 'all'},
+                                {'label': 'Endast medaljörer', 'value': 'medal'}
+                            ],
+                            value='medal',
+                            className='radio-group'
+                        )
+                    ], className='control-card')
+                ], className='control-panel'),
+                html.Div([
+                    html.Label("Tidsperiod"),
+                    dcc.RangeSlider(
+                        id='canada-year-range',
+                        min=year_min,
+                        max=year_max,
+                        value=[max(1920, year_min), year_max],
+                        allowCross=False,
+                        marks=year_marks,
+                        tooltip={'placement': 'bottom', 'always_visible': False}
+                    )
+                ], className='slider-card'),
+                html.P(
+                    "Axlar: X visar ålder (år), Y visar längd (cm) och Z visar vikt (kg). Animeringen bläddrar år för år – tryck play för att följa utvecklingen.",
+                    className='axis-note'
                 )
-            ], className='control-card'),
+            ], className='section-column section-column--info'),
             html.Div([
-                html.Label("Vilka idrottare ska visas?"),
-                dcc.RadioItems(
-                    id='canada-medal-filter',
-                    options=[
-                        {'label': 'Alla deltagare', 'value': 'all'},
-                        {'label': 'Endast medaljörer', 'value': 'medal'}
-                    ],
-                    value='medal',
-                    className='radio-group'
-                )
-            ], className='control-card')
-        ], className='control-panel'),
-        html.Label("Tidsperiod"),
-        dcc.RangeSlider(
-            id='canada-year-range',
-            min=year_min,
-            max=year_max,
-            value=[max(1920, year_min), year_max],
-            allowCross=False,
-            marks=year_marks,
-            tooltip={'placement': 'bottom', 'always_visible': False}
-        ),
-        html.P("Axlar: X visar ålder (år), Y visar längd (cm) och Z visar vikt (kg). Animeringen bläddrar år för år – tryck play för att följa utvecklingen.", className='axis-note'),
-        dcc.Graph(id='canada-3d-profile')
+                html.Div(dcc.Graph(id='canada-3d-profile'), className='graph-card')
+            ], className='section-column section-column--visual')
+        ], className='section-content section-content--split')
     ], className='section highlight-section'),
     
     # LAND-ANALYS SEKTION
     html.Div([
-        html.H2("Uppgift 1: Landstatistik"),
+        html.Div([
+            html.H2("Uppgift 1: Landstatistik"),
+            html.P(
+                "Visualisera medaljfördelning och utveckling för det valda landet.",
+                className='section-description'
+            )
+        ], className='section-header'),
         dcc.Dropdown(
             id='country-dropdown',
             options=[{'label': noc, 'value': noc} for noc in sorted(df['NOC'].unique())],
             value='CAN',  # Kanada
             className='dropdown'
         ),
-        html.P("Axlarna anger medaljranken per sport, antal medaljer per spel, åldersfördelningen samt medaljtypernas proportioner för det valda landet.", className='axis-note'),
-        dcc.Graph(id='medals-by-sport'),
-        dcc.Graph(id='medals-per-year'),
-        dcc.Graph(id='age-histogram'),
-        dcc.Graph(id='medal-types')
+        html.P(
+            "Axlarna anger medaljranken per sport, antal medaljer per spel, åldersfördelningen samt medaljtypernas proportioner för det valda landet.",
+            className='axis-note'
+        ),
+        html.Div([
+            html.Div(dcc.Graph(id='medals-by-sport'), className='graph-card'),
+            html.Div(dcc.Graph(id='medals-per-year'), className='graph-card'),
+            html.Div(dcc.Graph(id='age-histogram'), className='graph-card'),
+            html.Div(dcc.Graph(id='medal-types'), className='graph-card')
+        ], className='graph-grid')
     ], className='section'),
     
     # SPORT-ANALYS SEKTION
     html.Div([
-        html.H2("Uppgift 2: Sportstatistik"),
+        html.Div([
+            html.H2("Uppgift 2: Sportstatistik"),
+            html.P(
+                "Följ medaljer, åldrar och könsfördelning inom vald sport.",
+                className='section-description'
+            )
+        ], className='section-header'),
         dcc.Dropdown(
             id='sport-dropdown',
             options=[{'label': sport, 'value': sport} for sport in sorted(df['Sport'].unique())],
             value='Swimming',
             className='dropdown'
         ),
-        html.P("Axlarna beskriver medaljer per land (x = medaljer, y = land), åldersfördelning (x = ålder i år, y = antal idrottare), könsfördelning samt medaljtyper inom vald sport.", className='axis-note'),
-        dcc.Graph(id='sport-medals'),
-        dcc.Graph(id='sport-ages'),
-        dcc.Graph(id='sport-gender'),
-        dcc.Graph(id='sport-medal-types')
+        html.P(
+            "Axlarna beskriver medaljer per land (x = medaljer, y = land), åldersfördelning (x = ålder i år, y = antal idrottare), könsfördelning samt medaljtyper inom vald sport.",
+            className='axis-note'
+        ),
+        html.Div([
+            html.Div(dcc.Graph(id='sport-medals'), className='graph-card'),
+            html.Div(dcc.Graph(id='sport-ages'), className='graph-card'),
+            html.Div(dcc.Graph(id='sport-gender'), className='graph-card'),
+            html.Div(dcc.Graph(id='sport-medal-types'), className='graph-card')
+        ], className='graph-grid')
     ], className='section'),
 
     # GLOBAL ANIMERING SEKTION
     html.Div([
-        html.H2("Global Medaljracet – Animerad översikt"),
-        html.P("Se hur världens främsta nationslag tävlar om medaljer över tid. Animeringen uppdateras år för år – tryck play för att starta racet."),
+        html.Div([
+            html.H2("Global Medaljracet – Animerad översikt"),
+            html.P(
+                "Se hur världens främsta nationslag tävlar om medaljer över tid. Animeringen uppdateras år för år – tryck play för att starta racet.",
+                className='section-description'
+            )
+        ], className='section-header'),
         html.Div([
             html.Div([
-                html.Label("Säsong"),
-                dcc.RadioItems(
-                    id='global-season-filter',
-                    options=[
-                        {'label': 'Alla spel', 'value': 'All'},
-                        {'label': 'Sommarspel', 'value': 'Summer'},
-                        {'label': 'Vinterspel', 'value': 'Winter'}
-                    ],
-                    value='Summer',
-                    className='radio-group'
+                html.Div([
+                    html.Div([
+                        html.Label("Säsong"),
+                        dcc.RadioItems(
+                            id='global-season-filter',
+                            options=[
+                                {'label': 'Alla spel', 'value': 'All'},
+                                {'label': 'Sommarspel', 'value': 'Summer'},
+                                {'label': 'Vinterspel', 'value': 'Winter'}
+                            ],
+                            value='Summer',
+                            className='radio-group'
+                        )
+                    ], className='control-card'),
+                    html.Div([
+                        html.Label("Visa topp NOC per år"),
+                        dcc.Slider(
+                            id='global-top-n-slider',
+                            min=5,
+                            max=15,
+                            step=1,
+                            value=8,
+                            marks={i: str(i) for i in range(5, 16, 2)}
+                        )
+                    ], className='control-card')
+                ], className='control-panel'),
+                html.P(
+                    "Axlar: Y listar NOC-koder (länder) och X visar antal medaljer det året. Play-knappen låter dig följa utvecklingen över alla spel.",
+                    className='axis-note'
                 )
-            ], className='control-card'),
+            ], className='section-column section-column--info'),
             html.Div([
-                html.Label("Visa topp NOC per år"),
-                dcc.Slider(
-                    id='global-top-n-slider',
-                    min=5,
-                    max=15,
-                    step=1,
-                    value=8,
-                    marks={i: str(i) for i in range(5, 16, 2)}
-                )
-            ], className='control-card')
-        ], className='control-panel'),
-        html.P("Axlar: Y listar NOC-koder (länder) och X visar antal medaljer det året. Play-knappen låter dig följa utvecklingen över alla spel.", className='axis-note'),
-        dcc.Graph(id='global-medal-race')
+                html.Div(dcc.Graph(id='global-medal-race'), className='graph-card')
+            ], className='section-column section-column--visual')
+        ], className='section-content section-content--split')
     ], className='section')
     
 ], className='container')

@@ -30,12 +30,69 @@ body {
     margin-bottom: 30px;
 }
 
+.section-header {
+    margin-bottom: 20px;
+}
+
+.section-description {
+    margin-top: 10px;
+    color: #4f5d68;
+    line-height: 1.6;
+}
+
 .section h2 {
     color: #2A9D8F;
     margin-bottom: 20px;
     font-size: 1.8em;
     border-bottom: 3px solid #2A9D8F;
     padding-bottom: 10px;
+}
+
+.section-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.section-content--split {
+    align-items: stretch;
+}
+
+.section-column {
+    flex: 1 1 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.section-column--info {
+    max-width: 460px;
+}
+
+.section-column--visual {
+    flex: 1 1 480px;
+}
+
+.slider-card {
+    background: #f1f9f9;
+    padding: 18px;
+    border-radius: 8px;
+    border-left: 4px solid #2A9D8F;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.graph-card {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.graph-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .dropdown {
@@ -94,17 +151,26 @@ body {
     .container {
         padding: 10px;
     }
-    
+
     .header {
         font-size: 1.8em;
     }
-    
+
     .dropdown {
         width: 100%;
     }
 
     .control-card {
         flex: 1 1 100%;
+    }
+
+    .section-content {
+        flex-direction: column;
+    }
+
+    .section-column--info,
+    .section-column--visual {
+        max-width: none;
     }
 }
 

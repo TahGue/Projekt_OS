@@ -1,2 +1,2 @@
-web: gunicorn src.dashboard:app.server
+web: gunicorn app:app
 
