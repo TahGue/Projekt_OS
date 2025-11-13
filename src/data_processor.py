@@ -131,3 +131,64 @@ class OlympicAnalyzer:
         ]
         return country_medals['Name_hash'].value_counts().head(top_n)
 
+    def country_athlete_profile(self, country_code='CAN', season=None, medal_only=False):
+        """
+        Returnerar dataprofil för ett lands atleter (används för 3D-visualiseringar)
+
+        Args:
+            country_code (str): NOC-kod för landet
+            season (str | None): Filtrera på säsong ('Summer', 'Winter' eller None/'All')
+            medal_only (bool): Om endast medaljörer ska inkluderas
+
+        Returns:
+            pd.DataFrame: Filtrerad DataFrame med numeriska attribut bevarade
+        """
+        data = self.df[self.df['NOC'] == country_code].copy()
+
+        if season and season != 'All':
+            data = data[data['Season'] == season]
+
+        if medal_only:
+            data = data[data['Medal'].notna()]
+
+        numeric_cols = ['Age', 'Height', 'Weight']
+        data = data.dropna(subset=numeric_cols).copy()
+
+        for col in numeric_cols:
+            data[col] = pd.to_numeric(data[col], errors='coerce')
+
+        data = data.dropna(subset=numeric_cols)
+        data['Year'] = data['Year'].astype(int)
+
+        return data
+
+    def global_medal_race(self, season=None, top_n=10):
+        """
+        Skapar en global medaljtabell per år för animerade visualiseringar.
+
+        Args:
+            season (str | None): Filtrera på säsong ('Summer', 'Winter' eller None/'All')
+            top_n (int): Antal länder att visa per år
+
+        Returns:
+            pd.DataFrame: DataFrame med kolumnerna Year, NOC och Medals
+        """
+        data = self.df[self.df['Medal'].notna()].copy()
+
+        if season and season != 'All':
+            data = data[data['Season'] == season]
+
+        medal_table = (
+            data.groupby(['Year', 'NOC'])
+            .size()
+            .reset_index(name='Medals')
+        )
+
+        medal_table['Year'] = medal_table['Year'].astype(int)
+        medal_table = medal_table.sort_values(['Year', 'Medals'], ascending=[True, False])
+
+        top_table = medal_table.groupby('Year').head(top_n).copy()
+        top_table['Rank'] = top_table.groupby('Year')['Medals'].rank(method='first', ascending=False)
+
+        return top_table
+
